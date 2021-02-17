@@ -1,3 +1,4 @@
+// @dart=2.1
 import '../lib/dynamic_value.dart';
 
 void main() {
