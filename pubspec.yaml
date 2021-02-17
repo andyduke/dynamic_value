@@ -1,21 +1,14 @@
 name: dynamic_value
-description: The easy way to work with JSON data.
-version: 1.0.0+1
+description: The easy way to work with JSON data, safe access to nested data in the Map and safe type conversion.
+version: 1.0.1
 author: Andy Chentsov
 homepage: https://github.com/andyduke/dynamic_value
 repository: https://github.com/andyduke/dynamic_value
 issue_tracker: https://github.com/andyduke/dynamic_value/issues
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
-  flutter: ">=1.17.0"
-
-dependencies:
-  flutter:
-    sdk: flutter
+  sdk: ">=2.1.0 <3.0.0"
+#  flutter: ">=1.17.0"
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
-flutter:
+  test: ^1.15.7

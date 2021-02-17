@@ -1,6 +1,15 @@
+// @dart=2.9
 library dynamic_value;
 
-enum DynamicValueType { isMap, isList, isString, isNum, isBool, isNull, unknown }
+enum DynamicValueType {
+  isMap,
+  isList,
+  isString,
+  isNum,
+  isBool,
+  isNull,
+  unknown
+}
 
 /// Data access with type conversion, it is convenient to use when parsing JSON.
 ///
@@ -66,28 +75,29 @@ class DynamicValue {
     return '$value';
   }
 
-  T _to<T>(dynamic value, {dynamic defaultValue, Function builder, Function rawBuilder}) {
+  T _to<T>(DynamicValue value, dynamic rawValue,
+      {dynamic defaultValue, Function builder, Function rawBuilder}) {
     assert(builder == null || rawBuilder == null);
 
-    if (value == null) return defaultValue;
+    if (rawValue == null) return defaultValue;
 
     final Type type = T;
     T result;
 
-    if (value.runtimeType != type) {
+    if (rawValue.runtimeType != type) {
       if (builder != null) {
-        result = builder.call(this) as T;
+        result = builder.call(value) as T;
       } else if (rawBuilder != null) {
-        result = rawBuilder.call(value) as T;
+        result = rawBuilder.call(rawValue) as T;
       } else {
         if (builders.containsKey(type)) {
-          result = builders[type].call(this) as T;
+          result = builders[type].call(value) as T;
         } else if (rawBuilders.containsKey(type)) {
-          result = rawBuilders[type].call(value) as T;
+          result = rawBuilders[type].call(rawValue) as T;
         }
       }
     } else {
-      result = value as T;
+      result = rawValue as T;
     }
     return result ?? defaultValue;
   }
@@ -95,6 +105,7 @@ class DynamicValue {
   /// Convert value to T type
   T to<T>({dynamic defaultValue, Function builder, Function rawBuilder}) {
     return _to<T>(
+      this,
       value,
       defaultValue: defaultValue,
       builder: builder,
@@ -103,13 +114,15 @@ class DynamicValue {
   }
 
   /// Convert value to List of T types
-  List<T> toList<T>({dynamic defaultValue, Function itemBuilder, Function itemRawBuilder}) {
+  List<T> toList<T>(
+      {dynamic defaultValue, Function itemBuilder, Function itemRawBuilder}) {
     assert(itemBuilder == null || itemRawBuilder == null);
 
     if (!(value is List)) return defaultValue;
 
     List<T> result = (value as List)
-        .map((entry) => _to<T>(entry, builder: itemBuilder, rawBuilder: itemRawBuilder))
+        .map((entry) => _to<T>(DynamicValue(entry), entry,
+            builder: itemBuilder, rawBuilder: itemRawBuilder))
         .cast<T>()
         .toList();
 
@@ -131,7 +144,9 @@ class DynamicValue {
       // List index
       if (value is List) {
         final List list = value as List;
-        return (key < list.length && key >= 0) ? DynamicValue(list[key]) : _nullValue;
+        return (key < list.length && key >= 0)
+            ? DynamicValue(list[key])
+            : _nullValue;
       } else {
         return _nullValue;
       }
@@ -227,7 +242,9 @@ bool _parseBool(dynamic value) {
     return (value == 0) ? false : true;
   } else if (value is String) {
     final num parsed = num.tryParse(value);
-    return (parsed != null) ? (parsed == 0 ? false : true) : (value.trim().toLowerCase() == 'true');
+    return (parsed != null)
+        ? (parsed == 0 ? false : true)
+        : (value.trim().toLowerCase() == 'true');
   } else {
     return null;
   }
