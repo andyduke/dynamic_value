@@ -1,15 +1,6 @@
-// @dart=2.9
 library dynamic_value;
 
-enum DynamicValueType {
-  isMap,
-  isList,
-  isString,
-  isNum,
-  isBool,
-  isNull,
-  unknown
-}
+enum DynamicValueType { isMap, isList, isString, isNum, isBool, isNull, unknown }
 
 /// Data access with type conversion, it is convenient to use when parsing JSON.
 ///
@@ -75,8 +66,7 @@ class DynamicValue {
     return '$value';
   }
 
-  T _to<T>(DynamicValue value, dynamic rawValue,
-      {dynamic defaultValue, Function builder, Function rawBuilder}) {
+  T _to<T>(DynamicValue value, dynamic rawValue, {dynamic defaultValue, Function builder, Function rawBuilder}) {
     assert(builder == null || rawBuilder == null);
 
     if (rawValue == null) return defaultValue;
@@ -114,15 +104,13 @@ class DynamicValue {
   }
 
   /// Convert value to List of T types
-  List<T> toList<T>(
-      {dynamic defaultValue, Function itemBuilder, Function itemRawBuilder}) {
+  List<T> toList<T>({dynamic defaultValue, Function itemBuilder, Function itemRawBuilder}) {
     assert(itemBuilder == null || itemRawBuilder == null);
 
     if (!(value is List)) return defaultValue;
 
     List<T> result = (value as List)
-        .map((entry) => _to<T>(DynamicValue(entry), entry,
-            builder: itemBuilder, rawBuilder: itemRawBuilder))
+        .map((entry) => _to<T>(DynamicValue(entry), entry, builder: itemBuilder, rawBuilder: itemRawBuilder))
         .cast<T>()
         .toList();
 
@@ -144,9 +132,7 @@ class DynamicValue {
       // List index
       if (value is List) {
         final List list = value as List;
-        return (key < list.length && key >= 0)
-            ? DynamicValue(list[key])
-            : _nullValue;
+        return (key < list.length && key >= 0) ? DynamicValue(list[key]) : _nullValue;
       } else {
         return _nullValue;
       }
@@ -242,9 +228,7 @@ bool _parseBool(dynamic value) {
     return (value == 0) ? false : true;
   } else if (value is String) {
     final num parsed = num.tryParse(value);
-    return (parsed != null)
-        ? (parsed == 0 ? false : true)
-        : (value.trim().toLowerCase() == 'true');
+    return (parsed != null) ? (parsed == 0 ? false : true) : (value.trim().toLowerCase() == 'true');
   } else {
     return null;
   }
