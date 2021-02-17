@@ -90,14 +90,19 @@ data.to<User>(builder: User.fromDynamicValue)           // User(id: 1, ...)
 data['groups'][0].to<Group>(rawBuilder: Group.fromMap)  // Group(id: 1, ...)
 ```
 
-You can also specify a default value using the `defaultValue` parameter, if the value cannot be converted:
+> **For builder**: the converter function must accept `DynamicValue` as input and return the required type.
+> 
+> **For rawBuilder**: the converter function must accept a dart data type as input (for example Map, List, int, String, etc.) and return the required type. 
+
+
+You can specify a default value using the `defaultValue` parameter, if the value cannot be converted:
 ```dart
 .to<int>(defaultValue: 4)
 ```
 
 You can convert a list of values to a list of the specified type using the `.toList<T>()` method:
 ```dart
-data['groups'].toList<Group>()          // <Group>[Group(id: 1, ...)]
+value['groups'].toList<Group>()          // <Group>[Group(id: 1, ...)]
 ```
 
 
@@ -105,12 +110,12 @@ data['groups'].toList<Group>()          // <Group>[Group(id: 1, ...)]
 
 You can check if an object has a specific key or a specific index in the list using the `.has()` method:
 ```dart
-data.has('id')                  // true
-data['groups'].has(2)           // false
+value.has('id')                  // true
+value['groups'].has(2)           // false
 ```
 
 You can also check if `DynamicValue` contains `null` using the following two properties:
 ```dart
-data.isNull             // Returns true if value is null
-data.isNotNull          // Returns true if value is NOT null
+value.isNull             // Returns true if value is null
+value.isNotNull          // Returns true if value is NOT null
 ```
