@@ -139,7 +139,7 @@ class DynamicValue {
   /// Returns the DynamicValue for the given key or DynamicValue(null) if key is not in the map.
   ///
   /// The key can be an index in a list or a string key in a map.
-  dynamic operator [](dynamic key) {
+  DynamicValue operator [](dynamic key) {
     if (key is int) {
       // List index
       if (value is List) {
