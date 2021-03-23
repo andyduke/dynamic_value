@@ -1,4 +1,3 @@
-// @dart=2.1
 library dynamic_value;
 
 enum DynamicValueType {
@@ -39,7 +38,7 @@ class DynamicValue {
   /// Raw type
   final dynamic value;
 
-  DynamicValueType _type;
+  DynamicValueType? _type;
   DynamicValueType get type {
     if (_type == null) {
       _type = DynamicValueType.unknown;
@@ -57,7 +56,7 @@ class DynamicValue {
         _type = DynamicValueType.isNull;
       }
     }
-    return _type;
+    return _type ?? DynamicValueType.unknown;
   }
 
   DynamicValue(this.value);
@@ -75,25 +74,25 @@ class DynamicValue {
     return '$value';
   }
 
-  T _to<T>(DynamicValue value, dynamic rawValue,
-      {dynamic defaultValue, Function builder, Function rawBuilder}) {
+  T? _to<T>(DynamicValue value, dynamic rawValue,
+      {dynamic defaultValue, Function? builder, Function? rawBuilder}) {
     assert(builder == null || rawBuilder == null);
 
     if (rawValue == null) return defaultValue;
 
     final Type type = T;
-    T result;
+    T? result;
 
     if (rawValue.runtimeType != type) {
       if (builder != null) {
-        result = builder.call(value) as T;
+        result = builder.call(value) as T?;
       } else if (rawBuilder != null) {
-        result = rawBuilder.call(rawValue) as T;
+        result = rawBuilder.call(rawValue) as T?;
       } else {
         if (builders.containsKey(type)) {
-          result = builders[type].call(value) as T;
+          result = builders[type]!.call(value) as T?;
         } else if (rawBuilders.containsKey(type)) {
-          result = rawBuilders[type].call(rawValue) as T;
+          result = rawBuilders[type]!.call(rawValue) as T?;
         }
       }
     } else {
@@ -103,7 +102,7 @@ class DynamicValue {
   }
 
   /// Convert value to T type
-  T to<T>({dynamic defaultValue, Function builder, Function rawBuilder}) {
+  T? to<T>({dynamic defaultValue, Function? builder, Function? rawBuilder}) {
     return _to<T>(
       this,
       value,
@@ -114,8 +113,8 @@ class DynamicValue {
   }
 
   /// Convert value to List of T types
-  List<T> toList<T>(
-      {dynamic defaultValue, Function itemBuilder, Function itemRawBuilder}) {
+  List<T>? toList<T>(
+      {dynamic defaultValue, Function? itemBuilder, Function? itemRawBuilder}) {
     assert(itemBuilder == null || itemRawBuilder == null);
 
     if (!(value is List)) return defaultValue;
@@ -129,17 +128,17 @@ class DynamicValue {
     return result;
   }
 
-  String get toStr => to<String>();
-  num get toNum => to<num>();
-  int get toInt => to<int>();
-  double get toDouble => to<double>();
-  bool get toBool => to<bool>(defaultValue: false);
-  DateTime get toDateTime => to<DateTime>();
+  String? get toStr => to<String>();
+  num? get toNum => to<num>();
+  int? get toInt => to<int>();
+  double? get toDouble => to<double>();
+  bool? get toBool => to<bool>(defaultValue: false);
+  DateTime? get toDateTime => to<DateTime>();
 
   /// Returns the DynamicValue for the given key or DynamicValue(null) if key is not in the map.
   ///
   /// The key can be an index in a list or a string key in a map.
-  dynamic operator [](dynamic key) {
+  DynamicValue operator [](dynamic key) {
     if (key is int) {
       // List index
       if (value is List) {
@@ -187,7 +186,7 @@ class DynamicValue {
   }
 }
 
-num _parseNum(dynamic value) {
+num? _parseNum(dynamic value) {
   if (value is num) {
     return value;
   } else if (value is int) {
@@ -203,7 +202,7 @@ num _parseNum(dynamic value) {
   }
 }
 
-int _parseInt(dynamic value) {
+int? _parseInt(dynamic value) {
   if (value is int) {
     return value;
   } else if (value is double) {
@@ -219,7 +218,7 @@ int _parseInt(dynamic value) {
   }
 }
 
-double _parseDouble(dynamic value) {
+double? _parseDouble(dynamic value) {
   if (value is double) {
     return value;
   } else if (value is int) {
@@ -235,13 +234,13 @@ double _parseDouble(dynamic value) {
   }
 }
 
-bool _parseBool(dynamic value) {
+bool? _parseBool(dynamic value) {
   if (value is bool) {
     return value;
   } else if ((value is num) || (value is int) || (value is double)) {
     return (value == 0) ? false : true;
   } else if (value is String) {
-    final num parsed = num.tryParse(value);
+    final num? parsed = num.tryParse(value);
     return (parsed != null)
         ? (parsed == 0 ? false : true)
         : (value.trim().toLowerCase() == 'true');
@@ -250,7 +249,7 @@ bool _parseBool(dynamic value) {
   }
 }
 
-DateTime _parseDateTime(dynamic value) {
+DateTime? _parseDateTime(dynamic value) {
   if (value is DateTime) {
     return value;
   } else if (value is String) {

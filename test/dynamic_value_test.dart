@@ -1,4 +1,3 @@
-// @dart=2.1
 import 'package:test/test.dart';
 import 'package:dynamic_value/dynamic_value.dart';
 
@@ -39,7 +38,7 @@ void main() {
       final Map value = {};
       final dynValue = DynamicValue(value);
 
-      final num expected = null;
+      final num? expected = null;
       expect(dynValue.toNum, expected);
     });
 
@@ -54,7 +53,7 @@ void main() {
       final String value = 'invalid string';
       final dynValue = DynamicValue(value);
 
-      final num expected = null;
+      final num? expected = null;
       expect(dynValue.toNum, expected);
     });
 
@@ -121,7 +120,7 @@ void main() {
       final Map value = {};
       final dynValue = DynamicValue(value);
 
-      final num expected = null;
+      final num? expected = null;
       expect(dynValue.toInt, expected);
     });
 
@@ -136,7 +135,7 @@ void main() {
       final String value = 'invalid string';
       final dynValue = DynamicValue(value);
 
-      final num expected = null;
+      final num? expected = null;
       expect(dynValue.toInt, expected);
     });
 
@@ -207,7 +206,7 @@ void main() {
       final Map value = {};
       final dynValue = DynamicValue(value);
 
-      final num expected = null;
+      final num? expected = null;
       expect(dynValue.toDouble, expected);
     });
 
@@ -222,7 +221,7 @@ void main() {
       final String value = 'invalid string';
       final dynValue = DynamicValue(value);
 
-      final num expected = null;
+      final num? expected = null;
       expect(dynValue.toDouble, expected);
     });
 
@@ -363,7 +362,7 @@ void main() {
       final Map value = {};
       final dynValue = DynamicValue(value);
 
-      final DateTime expected = null;
+      final DateTime? expected = null;
       expect(dynValue.toDateTime, expected);
     });
 
@@ -388,7 +387,7 @@ void main() {
       final String value = 'invalid string';
       final dynValue = DynamicValue(value);
 
-      final DateTime expected = null;
+      final DateTime? expected = null;
       expect(dynValue.toDateTime, expected);
     });
 
@@ -396,7 +395,7 @@ void main() {
       final DateTime value = DateTime.now();
       final dynValue = DynamicValue(value);
 
-      final int expected = null;
+      final int? expected = null;
       expect(dynValue.toInt, expected);
     });
 
@@ -404,7 +403,7 @@ void main() {
       final DateTime value = DateTime.now();
       final dynValue = DynamicValue(value);
 
-      final num expected = null;
+      final num? expected = null;
       expect(dynValue.toNum, expected);
     });
 
@@ -412,7 +411,7 @@ void main() {
       final DateTime value = DateTime.now();
       final dynValue = DynamicValue(value);
 
-      final double expected = null;
+      final double? expected = null;
       expect(dynValue.toDouble, expected);
     });
 
@@ -432,7 +431,7 @@ void main() {
       };
       final dynValue = DynamicValue(value);
 
-      final User actual =
+      final User? actual =
           dynValue.to<User>(builder: (data) => User.fromData(data));
       final User expected = User.fromMap(value);
       expect(actual, expected);
@@ -445,7 +444,7 @@ void main() {
       };
       final dynValue = DynamicValue(value);
 
-      final User actual =
+      final User? actual =
           dynValue.to<User>(rawBuilder: (data) => User.fromMap(data));
       final User expected = User.fromMap(value);
       expect(actual, expected);
@@ -460,7 +459,7 @@ void main() {
       };
       final dynValue = DynamicValue(value);
 
-      final User actual = dynValue.to<User>();
+      final User? actual = dynValue.to<User>();
       final User expected = User.fromMap(value);
 
       DynamicValue.rawBuilders.remove(User);
@@ -477,7 +476,7 @@ void main() {
       };
       final dynValue = DynamicValue(value);
 
-      final User actual = dynValue.to<User>();
+      final User? actual = dynValue.to<User>();
       final User expected = User.fromMap(value);
 
       DynamicValue.builders.remove(User);
@@ -491,7 +490,7 @@ void main() {
       final List<int> value = List<int>.generate(5, (index) => index);
       final dynValue = DynamicValue(value);
 
-      final List<int> actual = dynValue.toList<int>();
+      final List<int>? actual = dynValue.toList<int>();
       expect(actual, value);
     });
 
@@ -500,7 +499,7 @@ void main() {
           5, (index) => User(id: index, name: 'Test $index'));
       final dynValue = DynamicValue(value);
 
-      final List<User> actual =
+      final List<User>? actual =
           dynValue.toList<User>(itemBuilder: (data) => User.fromData(data));
       expect(actual, value);
     });
@@ -514,8 +513,8 @@ void main() {
       };
       final dynValue = DynamicValue(value);
 
-      final int actual = dynValue['id'].toInt;
-      final int expected = value['id'];
+      final int? actual = dynValue['id'].toInt;
+      final int? expected = value['id'];
       expect(actual, expected);
     });
 
@@ -529,8 +528,8 @@ void main() {
       };
       final dynValue = DynamicValue(value);
 
-      final String actual = dynValue['group']['name'].toStr;
-      final String expected = value['group']['name'];
+      final String? actual = dynValue['group']['name'].toStr;
+      final String? expected = value['group']['name'];
       expect(actual, expected);
     });
 
@@ -546,8 +545,8 @@ void main() {
       };
       final dynValue = DynamicValue(value);
 
-      final String actual = dynValue['groups'][0]['name'].toStr;
-      final String expected = value['groups'][0]['name'];
+      final String? actual = dynValue['groups'][0]['name'].toStr;
+      final String? expected = value['groups'][0]['name'];
       expect(actual, expected);
     });
 
@@ -558,8 +557,8 @@ void main() {
       };
       final dynValue = DynamicValue(value);
 
-      final String actual = dynValue['group']['name'].toStr;
-      final String expected = null;
+      final String? actual = dynValue['group']['name'].toStr;
+      final String? expected = null;
       expect(actual, expected);
     });
 
@@ -571,8 +570,8 @@ void main() {
       };
       final dynValue = DynamicValue(value);
 
-      final String actual = dynValue['groups'][0]['name'].toStr;
-      final String expected = null;
+      final String? actual = dynValue['groups'][0]['name'].toStr;
+      final String? expected = null;
       expect(actual, expected);
     });
   });
@@ -582,7 +581,7 @@ void main() {
       final dynamic value = null;
       final dynValue = DynamicValue(value);
 
-      final num actual = dynValue['id'].to<num>(defaultValue: 7);
+      final num? actual = dynValue['id'].to<num>(defaultValue: 7);
       final num expected = 7;
       expect(actual, expected);
     });
@@ -591,7 +590,7 @@ void main() {
       final dynamic value = null;
       final dynValue = DynamicValue(value);
 
-      final int actual = dynValue['id'].to<int>(defaultValue: 7);
+      final int? actual = dynValue['id'].to<int>(defaultValue: 7);
       final int expected = 7;
       expect(actual, expected);
     });
@@ -600,7 +599,7 @@ void main() {
       final dynamic value = null;
       final dynValue = DynamicValue(value);
 
-      final double actual = dynValue['id'].to<double>(defaultValue: 7.1);
+      final double? actual = dynValue['id'].to<double>(defaultValue: 7.1);
       final double expected = 7.1;
       expect(actual, expected);
     });
@@ -609,7 +608,7 @@ void main() {
       final dynamic value = null;
       final dynValue = DynamicValue(value);
 
-      final String actual = dynValue['id'].to<String>(defaultValue: 'default');
+      final String? actual = dynValue['id'].to<String>(defaultValue: 'default');
       final String expected = 'default';
       expect(actual, expected);
     });
@@ -618,7 +617,7 @@ void main() {
       final dynamic value = null;
       final dynValue = DynamicValue(value);
 
-      final bool actual = dynValue['id'].to<bool>(defaultValue: true);
+      final bool? actual = dynValue['id'].to<bool>(defaultValue: true);
       final bool expected = true;
       expect(actual, expected);
     });
@@ -628,7 +627,7 @@ void main() {
       final dynValue = DynamicValue(value);
 
       final DateTime now = DateTime.now();
-      final DateTime actual = dynValue['id'].to<DateTime>(defaultValue: now);
+      final DateTime? actual = dynValue['id'].to<DateTime>(defaultValue: now);
       final DateTime expected = now;
       expect(actual, expected);
     });
@@ -638,7 +637,7 @@ void main() {
       final dynValue = DynamicValue(value);
 
       final User defaultUser = User(id: 7, name: 'Test');
-      final User actual = dynValue['id'].to<User>(
+      final User? actual = dynValue['id'].to<User>(
           defaultValue: defaultUser, builder: (data) => User.fromData(data));
       final User expected = defaultUser;
       expect(actual, same(expected));
@@ -647,8 +646,8 @@ void main() {
 }
 
 class User {
-  final int id;
-  final String name;
+  final int? id;
+  final String? name;
 
   User({
     this.id,

@@ -1,4 +1,3 @@
-// @dart=2.1
 import '../lib/dynamic_value.dart';
 
 void main() {
@@ -18,12 +17,12 @@ void main() {
 
   final value = DynamicValue(json);
 
-  final int userId = value['id'].toInt;
-  final String userName = value['name'].toStr;
-  final DateTime userCreatedAt = value['created'].toDateTime;
-  final int userGroupId = value['groups'][0]['id'].toInt;
-  final Group userFirstGroup = value['groups'][0].to<Group>();
-  final List<Group> userGroups = value['groups'].toList<Group>();
+  final int? userId = value['id'].toInt;
+  final String? userName = value['name'].toStr;
+  final DateTime? userCreatedAt = value['created'].toDateTime;
+  final int? userGroupId = value['groups'][0]['id'].toInt;
+  final Group? userFirstGroup = value['groups'][0].to<Group>();
+  final List<Group>? userGroups = value['groups'].toList<Group>();
 
   print('User ID: $userId');
   print('User name: $userName');
@@ -34,8 +33,8 @@ void main() {
 }
 
 class Group {
-  final int id;
-  final String name;
+  final int? id;
+  final String? name;
 
   Group({
     this.id,
