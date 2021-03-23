@@ -1,3 +1,7 @@
+## 2.0.0-nullsafety.3
+
+* In the `to<T>` and `toList<T>` methods, the `defaultValue` argument type has been changed from `dynamic` to `T?`/`List<T>?`.
+
 ## 2.0.0-nullsafety.2
 
 * Operator `[]` now returns type `DynamicValue` instead of type `dynamic`. 

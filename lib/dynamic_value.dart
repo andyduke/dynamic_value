@@ -75,7 +75,7 @@ class DynamicValue {
   }
 
   T? _to<T>(DynamicValue value, dynamic rawValue,
-      {dynamic defaultValue, Function? builder, Function? rawBuilder}) {
+      {T? defaultValue, Function? builder, Function? rawBuilder}) {
     assert(builder == null || rawBuilder == null);
 
     if (rawValue == null) return defaultValue;
@@ -102,7 +102,7 @@ class DynamicValue {
   }
 
   /// Convert value to T type
-  T? to<T>({dynamic defaultValue, Function? builder, Function? rawBuilder}) {
+  T? to<T>({T? defaultValue, Function? builder, Function? rawBuilder}) {
     return _to<T>(
       this,
       value,
@@ -114,7 +114,9 @@ class DynamicValue {
 
   /// Convert value to List of T types
   List<T>? toList<T>(
-      {dynamic defaultValue, Function? itemBuilder, Function? itemRawBuilder}) {
+      {List<T>? defaultValue,
+      Function? itemBuilder,
+      Function? itemRawBuilder}) {
     assert(itemBuilder == null || itemRawBuilder == null);
 
     if (!(value is List)) return defaultValue;
