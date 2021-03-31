@@ -1,3 +1,7 @@
+## 2.0.0-nullsafety.4
+
+* Improved `toList<T>` method to support different `Iterable` classes.
+
 ## 2.0.0-nullsafety.3
 
 * In the `to<T>` and `toList<T>` methods, the `defaultValue` argument type has been changed from `dynamic` to `T?`/`List<T>?`.

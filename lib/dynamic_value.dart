@@ -119,9 +119,9 @@ class DynamicValue {
       Function? itemRawBuilder}) {
     assert(itemBuilder == null || itemRawBuilder == null);
 
-    if (!(value is List)) return defaultValue;
+    if (!(value is Iterable)) return defaultValue;
 
-    List<T> result = (value as List)
+    List<T> result = (value as Iterable)
         .map((entry) => _to<T>(DynamicValue(entry), entry,
             builder: itemBuilder, rawBuilder: itemRawBuilder))
         .cast<T>()

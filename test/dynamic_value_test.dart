@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:test/test.dart';
 import 'package:dynamic_value/dynamic_value.dart';
 
@@ -322,7 +323,7 @@ void main() {
       final bool value = true;
       final dynValue = DynamicValue(value);
 
-      final int expected = value ? 1 : 0;
+      final int expected = value ? 1 : 0; // ignore: dead_code
       expect(dynValue.toInt, expected);
     });
 
@@ -330,7 +331,7 @@ void main() {
       final bool value = true;
       final dynValue = DynamicValue(value);
 
-      final num expected = value ? 1 : 0;
+      final num expected = value ? 1 : 0; // ignore: dead_code
       expect(dynValue.toInt, expected);
     });
 
@@ -338,7 +339,7 @@ void main() {
       final bool value = true;
       final dynValue = DynamicValue(value);
 
-      final num expected = value ? 1 : 0;
+      final num expected = value ? 1 : 0; // ignore: dead_code
       expect(dynValue.toDouble, expected);
     });
 
@@ -501,6 +502,18 @@ void main() {
 
       final List<User>? actual =
           dynValue.toList<User>(itemBuilder: (data) => User.fromData(data));
+      expect(actual, value);
+    });
+
+    test('(Iterable) of int', () {
+      final Map<String, dynamic> json = {
+        'items': List<int>.generate(5, (index) => index),
+      };
+      final Map<String, dynamic> map = jsonDecode(jsonEncode(json));
+      final value = map['items'];
+      final dynValue = DynamicValue(value);
+
+      final List<int>? actual = dynValue.toList<int>();
       expect(actual, value);
     });
   });
