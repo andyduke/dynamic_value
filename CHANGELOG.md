@@ -1,3 +1,7 @@
+## 2.0.1
+
+* The `toList<T>` method can now return a list of `Map` values that have been cast to the required type. 
+
 ## 2.0.0
 
 * Added the `toMap<K, V>` method to support typed `Map` classes.

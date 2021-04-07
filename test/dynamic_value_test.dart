@@ -516,6 +516,24 @@ void main() {
       final List<int>? actual = dynValue.toList<int>();
       expect(actual, value);
     });
+
+    test('of strings from Map', () {
+      final Map<String, dynamic> json = {
+        'items': {
+          '1': 'One',
+          '2': 'Two',
+        },
+      };
+      final Map<String, dynamic> map = jsonDecode(jsonEncode(json));
+      final value = map['items'];
+      final dynValue = DynamicValue(value);
+
+      final List<String>? actual = dynValue.toList<String>();
+
+      final List<String>? expected = json['items'].values.toList();
+
+      expect(actual, expected);
+    });
   });
 
   group('Map', () {

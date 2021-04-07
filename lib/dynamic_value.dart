@@ -123,15 +123,21 @@ class DynamicValue {
   }
 
   /// Convert value to List of T types
+  ///
+  /// If the value is not [Iterable] or [Map], the [defaultValue] will be returned.
+  /// If the value is a [Map], a list of map values, casted to the required type, will be returned.
+  ///
   List<T>? toList<T>(
       {List<T>? defaultValue,
       DynamicValueItemBuilder<T>? itemBuilder,
       DynamicValueRawItemBuilder<T>? itemRawBuilder}) {
     assert(itemBuilder == null || itemRawBuilder == null);
 
-    if (!(value is Iterable)) return defaultValue;
+    dynamic list = value;
+    if (list is Map) list = value.values;
+    if (!(list is Iterable)) return defaultValue;
 
-    List<T> result = (value as Iterable)
+    List<T> result = list
         .map((entry) => _to<T>(DynamicValue(entry), entry,
             builder: itemBuilder, rawBuilder: itemRawBuilder))
         .cast<T>()
