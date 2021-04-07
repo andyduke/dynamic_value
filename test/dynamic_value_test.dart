@@ -432,7 +432,8 @@ void main() {
       };
       final dynValue = DynamicValue(value);
 
-      final User? actual = dynValue.to<User>(builder: (data) => User.fromData(data));
+      final User? actual =
+          dynValue.to<User>(builder: (data) => User.fromData(data));
       final User expected = User.fromMap(value);
       expect(actual, expected);
     });
@@ -444,7 +445,8 @@ void main() {
       };
       final dynValue = DynamicValue(value);
 
-      final User? actual = dynValue.to<User>(rawBuilder: (data) => User.fromMap(data));
+      final User? actual =
+          dynValue.to<User>(rawBuilder: (data) => User.fromMap(data));
       final User expected = User.fromMap(value);
       expect(actual, expected);
     });
@@ -494,10 +496,12 @@ void main() {
     });
 
     test('of Custom Type', () {
-      final List<User> value = List<User>.generate(5, (index) => User(id: index, name: 'Test $index'));
+      final List<User> value = List<User>.generate(
+          5, (index) => User(id: index, name: 'Test $index'));
       final dynValue = DynamicValue(value);
 
-      final List<User>? actual = dynValue.toList<User>(itemBuilder: (data) => User.fromData(data));
+      final List<User>? actual =
+          dynValue.toList<User>(itemBuilder: (data) => User.fromData(data));
       expect(actual, value);
     });
 
@@ -530,7 +534,8 @@ void main() {
       };
       final dynValue = DynamicValue(value);
 
-      final Map<String, User?>? actual = dynValue.toMap<String, User>(valueBuilder: (data) => User.fromData(data));
+      final Map<String, User?>? actual = dynValue.toMap<String, User>(
+          valueBuilder: (data) => User.fromData(data));
 
       final Map<String, User?>? expected = value.map(
         (key, value) => MapEntry(
@@ -554,7 +559,8 @@ void main() {
       final value = map['items'];
       final dynValue = DynamicValue(value);
 
-      final Map<String, User?>? actual = dynValue.toMap<String, User>(valueBuilder: (data) => User.fromData(data));
+      final Map<String, User?>? actual = dynValue.toMap<String, User>(
+          valueBuilder: (data) => User.fromData(data));
 
       final Map<String, User?>? expected = users.map(
         (key, value) => MapEntry(
@@ -699,7 +705,8 @@ void main() {
       final dynValue = DynamicValue(value);
 
       final User defaultUser = User(id: 7, name: 'Test');
-      final User? actual = dynValue['id'].to<User>(defaultValue: defaultUser, builder: (data) => User.fromData(data));
+      final User? actual = dynValue['id'].to<User>(
+          defaultValue: defaultUser, builder: (data) => User.fromData(data));
       final User expected = defaultUser;
       expect(actual, same(expected));
     });
@@ -734,6 +741,7 @@ class User {
     return '<User #$id: $name>';
   }
 
-  bool operator ==(o) => o is User && o.runtimeType == User && o.id == id && o.name == name;
+  bool operator ==(o) =>
+      o is User && o.runtimeType == User && o.id == id && o.name == name;
   int get hashCode => id.hashCode ^ name.hashCode;
 }
