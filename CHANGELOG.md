@@ -1,3 +1,7 @@
+## 2.0.0
+
+* Added the `toMap<K, V>` method to support typed `Map` classes.
+
 ## 2.0.0-nullsafety.4
 
 * Improved `toList<T>` method to support different `Iterable` classes.

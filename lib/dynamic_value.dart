@@ -1,14 +1,6 @@
 library dynamic_value;
 
-enum DynamicValueType {
-  isMap,
-  isList,
-  isString,
-  isNum,
-  isBool,
-  isNull,
-  unknown
-}
+enum DynamicValueType { isMap, isList, isString, isNum, isBool, isNull, unknown }
 
 /// Data access with type conversion, it is convenient to use when parsing JSON.
 ///
@@ -74,8 +66,7 @@ class DynamicValue {
     return '$value';
   }
 
-  T? _to<T>(DynamicValue value, dynamic rawValue,
-      {T? defaultValue, Function? builder, Function? rawBuilder}) {
+  T? _to<T>(DynamicValue value, dynamic rawValue, {T? defaultValue, Function? builder, Function? rawBuilder}) {
     assert(builder == null || rawBuilder == null);
 
     if (rawValue == null) return defaultValue;
@@ -113,19 +104,54 @@ class DynamicValue {
   }
 
   /// Convert value to List of T types
-  List<T>? toList<T>(
-      {List<T>? defaultValue,
-      Function? itemBuilder,
-      Function? itemRawBuilder}) {
+  List<T>? toList<T>({List<T>? defaultValue, Function? itemBuilder, Function? itemRawBuilder}) {
     assert(itemBuilder == null || itemRawBuilder == null);
 
     if (!(value is Iterable)) return defaultValue;
 
     List<T> result = (value as Iterable)
-        .map((entry) => _to<T>(DynamicValue(entry), entry,
-            builder: itemBuilder, rawBuilder: itemRawBuilder))
+        .map((entry) => _to<T>(DynamicValue(entry), entry, builder: itemBuilder, rawBuilder: itemRawBuilder))
         .cast<T>()
         .toList();
+
+    return result;
+  }
+
+  T? _defaultKeyBuilder<T>(dynamic value, [T? defaultValue]) {
+    final Type type = T;
+    T? result;
+
+    if (value.runtimeType != type) {
+      if (rawBuilders.containsKey(type)) {
+        result = rawBuilders[type]!.call(value) as T?;
+      }
+    } else {
+      result = value as T;
+    }
+
+    return result ?? defaultValue;
+  }
+
+  /// Convert value to typed Map
+  Map<K, V?>? toMap<K, V>({
+    Map<K, V>? defaultValue,
+    Function? keyBuilder,
+    Function? valueBuilder,
+    Function? valueRawBuilder,
+  }) {
+    assert(valueBuilder == null || valueRawBuilder == null);
+
+    if (!(value is Map)) return defaultValue;
+
+    Map<K, V?> result = (value as Map).map<K, V?>((key, value) {
+      final newKey = (keyBuilder != null) ? keyBuilder.call(key) : _defaultKeyBuilder<K>(key);
+      final newValue = _to<V>(DynamicValue(value), value, builder: valueBuilder, rawBuilder: valueRawBuilder);
+      final newEntry = MapEntry<K, V?>(
+        newKey,
+        newValue,
+      );
+      return newEntry;
+    });
 
     return result;
   }
@@ -145,9 +171,7 @@ class DynamicValue {
       // List index
       if (value is List) {
         final List list = value as List;
-        return (key < list.length && key >= 0)
-            ? DynamicValue(list[key])
-            : _nullValue;
+        return (key < list.length && key >= 0) ? DynamicValue(list[key]) : _nullValue;
       } else {
         return _nullValue;
       }
@@ -243,9 +267,7 @@ bool? _parseBool(dynamic value) {
     return (value == 0) ? false : true;
   } else if (value is String) {
     final num? parsed = num.tryParse(value);
-    return (parsed != null)
-        ? (parsed == 0 ? false : true)
-        : (value.trim().toLowerCase() == 'true');
+    return (parsed != null) ? (parsed == 0 ? false : true) : (value.trim().toLowerCase() == 'true');
   } else {
     return null;
   }
