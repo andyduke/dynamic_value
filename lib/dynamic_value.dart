@@ -2,6 +2,10 @@ library dynamic_value;
 
 enum DynamicValueType { isMap, isList, isString, isNum, isBool, isNull, unknown }
 
+typedef DynamicValueKeyBuilder<T> = T? Function(dynamic value);
+typedef DynamicValueItemBuilder<T> = T? Function(DynamicValue data);
+typedef DynamicValueRawItemBuilder<T> = T? Function(dynamic values);
+
 /// Data access with type conversion, it is convenient to use when parsing JSON.
 ///
 /// Examples:
@@ -15,7 +19,7 @@ enum DynamicValueType { isMap, isList, isString, isNum, isBool, isNull, unknown 
 /// ```
 class DynamicValue {
   /// Type converters from raw data type
-  static Map<Type, Function> rawBuilders = {
+  static Map<Type, dynamic Function(dynamic value)> rawBuilders = {
     num: _parseNum,
     int: _parseInt,
     double: _parseDouble,
@@ -25,7 +29,7 @@ class DynamicValue {
   };
 
   /// Type converters from DynamicValue type
-  static Map<Type, Function> builders = {};
+  static Map<Type, dynamic Function(DynamicValue data)> builders = {};
 
   /// Raw type
   final dynamic value;
@@ -51,6 +55,7 @@ class DynamicValue {
     return _type ?? DynamicValueType.unknown;
   }
 
+  /// Creates an instance of the DynamicValue by wrapping the value.
   DynamicValue(this.value);
 
   static DynamicValue _nullValue = DynamicValue(null);
@@ -66,7 +71,8 @@ class DynamicValue {
     return '$value';
   }
 
-  T? _to<T>(DynamicValue value, dynamic rawValue, {T? defaultValue, Function? builder, Function? rawBuilder}) {
+  T? _to<T>(DynamicValue value, dynamic rawValue,
+      {T? defaultValue, DynamicValueItemBuilder<T>? builder, DynamicValueRawItemBuilder<T>? rawBuilder}) {
     assert(builder == null || rawBuilder == null);
 
     if (rawValue == null) return defaultValue;
@@ -76,9 +82,9 @@ class DynamicValue {
 
     if (rawValue.runtimeType != type) {
       if (builder != null) {
-        result = builder.call(value) as T?;
+        result = builder.call(value);
       } else if (rawBuilder != null) {
-        result = rawBuilder.call(rawValue) as T?;
+        result = rawBuilder.call(rawValue);
       } else {
         if (builders.containsKey(type)) {
           result = builders[type]!.call(value) as T?;
@@ -93,7 +99,7 @@ class DynamicValue {
   }
 
   /// Convert value to T type
-  T? to<T>({T? defaultValue, Function? builder, Function? rawBuilder}) {
+  T? to<T>({T? defaultValue, DynamicValueItemBuilder<T>? builder, DynamicValueRawItemBuilder<T>? rawBuilder}) {
     return _to<T>(
       this,
       value,
@@ -104,7 +110,8 @@ class DynamicValue {
   }
 
   /// Convert value to List of T types
-  List<T>? toList<T>({List<T>? defaultValue, Function? itemBuilder, Function? itemRawBuilder}) {
+  List<T>? toList<T>(
+      {List<T>? defaultValue, DynamicValueItemBuilder<T>? itemBuilder, DynamicValueRawItemBuilder<T>? itemRawBuilder}) {
     assert(itemBuilder == null || itemRawBuilder == null);
 
     if (!(value is Iterable)) return defaultValue;
@@ -135,17 +142,22 @@ class DynamicValue {
   /// Convert value to typed Map
   Map<K, V?>? toMap<K, V>({
     Map<K, V>? defaultValue,
-    Function? keyBuilder,
-    Function? valueBuilder,
-    Function? valueRawBuilder,
+    DynamicValueKeyBuilder<K>? keyBuilder,
+    DynamicValueItemBuilder<V>? valueBuilder,
+    DynamicValueRawItemBuilder<V>? valueRawBuilder,
   }) {
     assert(valueBuilder == null || valueRawBuilder == null);
 
     if (!(value is Map)) return defaultValue;
 
     Map<K, V?> result = (value as Map).map<K, V?>((key, value) {
-      final newKey = (keyBuilder != null) ? keyBuilder.call(key) : _defaultKeyBuilder<K>(key);
-      final newValue = _to<V>(DynamicValue(value), value, builder: valueBuilder, rawBuilder: valueRawBuilder);
+      final K? newKey = (keyBuilder != null) ? keyBuilder.call(key) : _defaultKeyBuilder<K>(key);
+      if (newKey == null) {
+        throw DynamicValueNullKeyException();
+      }
+
+      final V? newValue = _to<V>(DynamicValue(value), value, builder: valueBuilder, rawBuilder: valueRawBuilder);
+
       final newEntry = MapEntry<K, V?>(
         newKey,
         newValue,
@@ -210,75 +222,82 @@ class DynamicValue {
     }
     return false;
   }
-}
 
-num? _parseNum(dynamic value) {
-  if (value is num) {
-    return value;
-  } else if (value is int) {
-    return value;
-  } else if (value is double) {
-    return value;
-  } else if (value is bool) {
-    return value ? 1 : 0;
-  } else if (value is String) {
-    return num.tryParse(value);
-  } else {
-    return null;
+  // --- Converters
+
+  static num? _parseNum(dynamic value) {
+    if (value is num) {
+      return value;
+    } else if (value is int) {
+      return value;
+    } else if (value is double) {
+      return value;
+    } else if (value is bool) {
+      return value ? 1 : 0;
+    } else if (value is String) {
+      return num.tryParse(value);
+    } else {
+      return null;
+    }
+  }
+
+  static int? _parseInt(dynamic value) {
+    if (value is int) {
+      return value;
+    } else if (value is double) {
+      return value.toInt();
+    } else if (value is num) {
+      return value.toInt();
+    } else if (value is bool) {
+      return value ? 1 : 0;
+    } else if (value is String) {
+      return int.tryParse(value);
+    } else {
+      return null;
+    }
+  }
+
+  static double? _parseDouble(dynamic value) {
+    if (value is double) {
+      return value;
+    } else if (value is int) {
+      return value.toDouble();
+    } else if (value is num) {
+      return value.toDouble();
+    } else if (value is bool) {
+      return value ? 1 : 0;
+    } else if (value is String) {
+      return double.tryParse(value);
+    } else {
+      return null;
+    }
+  }
+
+  static bool? _parseBool(dynamic value) {
+    if (value is bool) {
+      return value;
+    } else if ((value is num) || (value is int) || (value is double)) {
+      return (value == 0) ? false : true;
+    } else if (value is String) {
+      final num? parsed = num.tryParse(value);
+      return (parsed != null) ? (parsed == 0 ? false : true) : (value.trim().toLowerCase() == 'true');
+    } else {
+      return null;
+    }
+  }
+
+  static DateTime? _parseDateTime(dynamic value) {
+    if (value is DateTime) {
+      return value;
+    } else if (value is String) {
+      return DateTime.tryParse(value);
+    } else {
+      return null;
+    }
   }
 }
 
-int? _parseInt(dynamic value) {
-  if (value is int) {
-    return value;
-  } else if (value is double) {
-    return value.toInt();
-  } else if (value is num) {
-    return value.toInt();
-  } else if (value is bool) {
-    return value ? 1 : 0;
-  } else if (value is String) {
-    return int.tryParse(value);
-  } else {
-    return null;
-  }
-}
-
-double? _parseDouble(dynamic value) {
-  if (value is double) {
-    return value;
-  } else if (value is int) {
-    return value.toDouble();
-  } else if (value is num) {
-    return value.toDouble();
-  } else if (value is bool) {
-    return value ? 1 : 0;
-  } else if (value is String) {
-    return double.tryParse(value);
-  } else {
-    return null;
-  }
-}
-
-bool? _parseBool(dynamic value) {
-  if (value is bool) {
-    return value;
-  } else if ((value is num) || (value is int) || (value is double)) {
-    return (value == 0) ? false : true;
-  } else if (value is String) {
-    final num? parsed = num.tryParse(value);
-    return (parsed != null) ? (parsed == 0 ? false : true) : (value.trim().toLowerCase() == 'true');
-  } else {
-    return null;
-  }
-}
-
-DateTime? _parseDateTime(dynamic value) {
-  if (value is DateTime) {
-    return value;
-  } else if (value is String) {
-    return DateTime.tryParse(value);
-  } else {
-    return null;
-  }
+class DynamicValueNullKeyException implements Exception {
+  @override
+  String toString() => 'Exception: The key cannot be null.';
 }

@@ -105,6 +105,22 @@ You can convert a list of values to a list of the specified type using the `.toL
 value['groups'].toList<Group>()          // <Group>[Group(id: 1, ...)]
 ```
 
+You can convert a map of values to a map of the specified type using the `.toMap<K, V>()` method:
+```json
+final json = {
+    "map-groups": {
+        "test-group-1": {
+            "id": "1",
+            "name": "Group 1",
+        }
+    }
+}
+```
+```dart
+final value = DynamicValue(json);
+value['map-groups'].toMap<String, Group>()          // <String, Group>{'test-group-1': Group(id: 1, ...)}
+```
+
 
 ## Helpers
 

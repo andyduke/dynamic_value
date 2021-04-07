@@ -1,6 +1,7 @@
 ## 2.0.0
 
 * Added the `toMap<K, V>` method to support typed `Map` classes.
+* Types and parameters are now specified in builders.
 
 ## 2.0.0-nullsafety.4
 
