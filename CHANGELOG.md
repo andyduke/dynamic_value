@@ -1,6 +1,10 @@
+## 2.0.2
+
+* The `toBool` method now returns a null-safe type.
+
 ## 2.0.1
 
-* The `toList<T>` method can now return a list of `Map` values that have been cast to the required type. 
+* The `toList<T>` method can now return a list of `Map` values that have been cast to the required type.
 
 ## 2.0.0
 

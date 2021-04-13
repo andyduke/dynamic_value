@@ -197,7 +197,7 @@ class DynamicValue {
   num? get toNum => to<num>();
   int? get toInt => to<int>();
   double? get toDouble => to<double>();
-  bool? get toBool => to<bool>(defaultValue: false);
+  bool get toBool => to<bool>(defaultValue: false)!;
   DateTime? get toDateTime => to<DateTime>();
 
   /// Returns the DynamicValue for the given key or DynamicValue(null) if key is not in the map.
