@@ -1,3 +1,7 @@
+## 2.5.0
+
+* **Breaking change:** Now in the `toMap<K, V>` method, the converted key is passed as the second parameter to the `valueBuilder` and `valueRawBuilder` callbacks.
+
 ## 2.0.2
 
 * The `toBool` method now returns a null-safe type.

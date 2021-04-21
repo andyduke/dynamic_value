@@ -1,6 +1,6 @@
 name: dynamic_value
 description: The easy way to work with JSON data, safe access to nested data in the Map and safe type conversion.
-version: 2.0.2
+version: 2.5.0
 author: Andy Chentsov
 homepage: https://github.com/andyduke/dynamic_value
 repository: https://github.com/andyduke/dynamic_value

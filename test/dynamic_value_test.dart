@@ -553,7 +553,7 @@ void main() {
       final dynValue = DynamicValue(value);
 
       final Map<String, User?>? actual = dynValue.toMap<String, User>(
-          valueBuilder: (data) => User.fromData(data));
+          valueBuilder: (data, key) => User.fromData(data));
 
       final Map<String, User?>? expected = value.map(
         (key, value) => MapEntry(
@@ -578,7 +578,7 @@ void main() {
       final dynValue = DynamicValue(value);
 
       final Map<String, User?>? actual = dynValue.toMap<String, User>(
-          valueBuilder: (data) => User.fromData(data));
+          valueBuilder: (data, key) => User.fromData(data));
 
       final Map<String, User?>? expected = users.map(
         (key, value) => MapEntry(

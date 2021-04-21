@@ -13,6 +13,10 @@ enum DynamicValueType {
 typedef DynamicValueKeyBuilder<T> = T? Function(dynamic value);
 typedef DynamicValueItemBuilder<T> = T? Function(DynamicValue data);
 typedef DynamicValueRawItemBuilder<T> = T? Function(dynamic values);
+typedef DynamicValueMapItemBuilder<K, T> = T? Function(
+    DynamicValue data, K? key);
+typedef DynamicValueRawMapItemBuilder<K, T> = T? Function(
+    dynamic values, K? key);
 
 /// Data access with type conversion, it is convenient to use when parsing JSON.
 ///
@@ -165,8 +169,8 @@ class DynamicValue {
   Map<K, V?>? toMap<K, V>({
     Map<K, V>? defaultValue,
     DynamicValueKeyBuilder<K>? keyBuilder,
-    DynamicValueItemBuilder<V>? valueBuilder,
-    DynamicValueRawItemBuilder<V>? valueRawBuilder,
+    DynamicValueMapItemBuilder<K, V>? valueBuilder,
+    DynamicValueRawMapItemBuilder<K, V>? valueRawBuilder,
   }) {
     assert(valueBuilder == null || valueRawBuilder == null);
 
@@ -180,8 +184,14 @@ class DynamicValue {
         throw DynamicValueNullKeyException();
       }
 
-      final V? newValue = _to<V>(DynamicValue(value), value,
-          builder: valueBuilder, rawBuilder: valueRawBuilder);
+      final V? newValue = _to<V>(
+        DynamicValue(value),
+        value,
+        builder: (valueBuilder != null) ? (v) => valueBuilder(v, newKey) : null,
+        rawBuilder: (valueRawBuilder != null)
+            ? (v) => valueRawBuilder(v, newKey)
+            : null,
+      );
 
       final newEntry = MapEntry<K, V?>(
         newKey,
