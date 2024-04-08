@@ -729,6 +729,133 @@ void main() {
       expect(actual, same(expected));
     });
   });
+
+  group('Compare DynamicValues:', () {
+    test('same instance', () {
+      final value = {'a': 1};
+      final a = DynamicValue(value);
+      final b = a;
+
+      expect(a, equals(b));
+    });
+
+    test('same values', () {
+      final value = {'a': 1};
+      final a = DynamicValue(value);
+      final b = DynamicValue(value);
+
+      expect(a, equals(b));
+    });
+
+    test('same values/different instances', () {
+      final value1 = {'a': 1};
+      final value2 = {'a': 1};
+      final a = DynamicValue(value1);
+      final b = DynamicValue(value2);
+
+      expect(a, equals(b));
+    });
+
+    test('different values', () {
+      final value1 = {'a': 1};
+      final value2 = {'b': 2};
+      final a = DynamicValue(value1);
+      final b = DynamicValue(value2);
+
+      expect(a, isNot(equals(b)));
+    });
+
+    test('with another type', () {
+      final value1 = {'a': 1};
+      final value2 = {'b': 2};
+      final a = DynamicValue(value1);
+      final b = value2;
+
+      expect(a, isNot(equals(b)));
+    });
+
+    test('different value types', () {
+      final value1 = {'a': 1};
+      final value2 = [
+        {'b': 2}
+      ];
+      final a = DynamicValue(value1);
+      final b = DynamicValue(value2);
+
+      expect(a, isNot(equals(b)));
+    });
+
+    test('scalar', () {
+      final value1 = 7;
+      final value2 = 7;
+      final a = DynamicValue(value1);
+      final b = DynamicValue(value2);
+
+      expect(a, equals(b));
+    });
+
+    test('lists', () {
+      final value1 = [1, 2];
+      final value2 = [1, 2];
+      final a = DynamicValue(value1);
+      final b = DynamicValue(value2);
+
+      expect(a, equals(b));
+    });
+
+    test('lists<T>', () {
+      final value1 = <int>[1, 2];
+      final value2 = <double>[1, 2];
+      final a = DynamicValue(value1);
+      final b = DynamicValue(value2);
+
+      expect(a, equals(b));
+    });
+
+    test('maps', () {
+      final value1 = {'a': 1, '_': 7};
+      final value2 = {'a': 1, '_': 7};
+      final a = DynamicValue(value1);
+      final b = DynamicValue(value2);
+
+      expect(a, equals(b));
+    });
+
+    test('sets', () {
+      final value1 = <int>{1, 2};
+      final value2 = <int>{1, 2};
+      final a = DynamicValue(value1);
+      final b = DynamicValue(value2);
+
+      expect(a, equals(b));
+    });
+
+    test('list of maps', () {
+      final value1 = [
+        {'a': 1}
+      ];
+      final value2 = [
+        {'a': 1}
+      ];
+      final a = DynamicValue(value1);
+      final b = DynamicValue(value2);
+
+      expect(value1, equals(value2));
+      expect(a, equals(b));
+    });
+
+    test('inside map', () {
+      final value1 = {'a': 1, '_': 7};
+      final value2 = {'a': 1, '_': 7};
+      final a = DynamicValue(value1);
+      final b = DynamicValue(value2);
+
+      final map1 = {'one': a};
+      final map2 = {'one': b};
+
+      expect(map1, equals(map2));
+    });
+  });
 }
 
 class User {

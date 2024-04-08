@@ -1,5 +1,7 @@
 library dynamic_value;
 
+import 'package:collection/collection.dart';
+
 enum DynamicValueType {
   isMap,
   isList,
@@ -259,6 +261,29 @@ class DynamicValue {
     }
     return false;
   }
+
+  // Comparable
+
+  @override
+  bool operator ==(covariant DynamicValue other) {
+    final eq = const DeepCollectionEquality.unordered();
+
+    return switch (value) {
+      // List() when other.value is List => listEquals(value, other.value),
+      // Map() when other.value is Map => mapEquals(value, other.value),
+      // Set() when other.value is Set => setEquals(value, other.value),
+      // List() when other.value is List => const ListEquality().equals(value, other.value),
+      // Map() when other.value is Map => const MapEquality().equals(value, other.value),
+      // Set() when other.value is Set => const SetEquality().equals(value, other.value),
+      List() when other.value is List => eq.equals(value, other.value),
+      Map() when other.value is Map => eq.equals(value, other.value),
+      Set() when other.value is Set => eq.equals(value, other.value),
+      _ => value == other.value,
+    };
+  }
+
+  @override
+  int get hashCode => value.hashCode;
 
   // --- Converters
 

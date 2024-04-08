@@ -1,3 +1,8 @@
+## 3.0.0
+
+* `DynamicValue` are made comparable by `value`, for example this can be used in tests.
+* Minimum Dart version raised to **3.1.0**.
+
 ## 2.5.0
 
 * **Breaking change:** Now in the `toMap<K, V>` method, the converted key is passed as the second parameter to the `valueBuilder` and `valueRawBuilder` callbacks.
